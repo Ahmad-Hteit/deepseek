@@ -1,0 +1,8 @@
+# Ignore the whole app folder
+src/app/**
+
+# # OR ignore only the specific file
+# src/app/page.js
+
+# # You can also ignore layout.js like this
+# src/app/layout.js
