@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { Webhook } from "svix";
-import dbConnect from "@config/db";
+import dbConnect from "../../../../config/db";
 import User from "../../../../modules/User";
 import { headers } from "next/headers";
 
@@ -19,7 +19,13 @@ export async function POST(req) {
     };
 
     const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
-    const { data, type } = wh.verify(body, svixHeaders);
+    let data, type;
+    try {
+      ({ data, type } = wh.verify(body, svixHeaders));
+    } catch (err) {
+      console.error("❌ Svix verification failed:", err);
+      return new Response("Unauthorized", { status: 401 });
+    }
 
     console.log("📦 Webhook Event:", type, data);
 
