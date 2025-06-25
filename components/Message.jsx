@@ -1,6 +1,8 @@
 import { assets } from '@assets/assets';
 import Image from 'next/image'
 import React from 'react'
+import PropTypes from 'prop-types';
+
 
 const Message = ({role, content}) => {
   return (
@@ -45,5 +47,10 @@ const Message = ({role, content}) => {
     </div>
   )
 }
+
+Message.propTypes = {
+  role: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+};
 
 export default Message

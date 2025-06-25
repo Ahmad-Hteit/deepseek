@@ -1,11 +1,14 @@
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { assets } from '@assets/assets';
+import PropTypes from 'prop-types';
+
 
 const PromptBox = ({isLoading,setIsLoading}) => {
 
 const [prompt, setprompt] = useState('');
-
+  isLoading;
+  setIsLoading;
   return (
     // eslint-disable-next-line no-constant-condition
     <form className={`w-full ${false ? "max-w-3xl" : "max-w-2xl"} bg-[#404045] p-4 rounded-3xl mt-4 transition-all`}>
@@ -52,5 +55,12 @@ const [prompt, setprompt] = useState('');
     </form>
   )
 }
+
+
+PromptBox.propTypes = {
+  isLoading: PropTypes.bool,
+  setIsLoading: PropTypes.func,
+};
+
 
 export default PromptBox

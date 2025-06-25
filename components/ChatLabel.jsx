@@ -1,8 +1,11 @@
 import { assets } from '@assets/assets';
 import Image from 'next/image'
 import React from 'react'
+import PropTypes from 'prop-types';
+
 
 const ChatLabel = ({openMenu, setOpenMenu}) => {
+  setOpenMenu;
   return (
     <div className='flex items-center justify-between p-2 text-white/80 hover:bg-white/10 rounded-lg 
     text-sm group cursor-pointer'>
@@ -25,5 +28,13 @@ const ChatLabel = ({openMenu, setOpenMenu}) => {
     </div>
   )
 }
+
+ChatLabel.propTypes = {
+  openMenu: PropTypes.shape({
+    open: PropTypes.bool.isRequired,
+  }).isRequired,
+  setOpenMenu: PropTypes.func,
+};
+
 
 export default ChatLabel
