@@ -32,11 +32,12 @@ export async function POST(req) {
     const userData = {
       _id: data.id,
       name: `${data.first_name} ${data.last_name}`,
-      email: data.email_addresses[0].email_address,
+      email: data.email_addresses?.[0]?.email_address ?? "noemail@unknown.com",
       image: data.image_url,
     };
 
     await dbConnect();
+    console.log("✅ Connected to MongoDB");
 
     switch (type) {
       case "user.created":
