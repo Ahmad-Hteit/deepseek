@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import Image from "next/image";
-import { assets } from '../assets/assets';
+import { assets } from '@assets/assets';
 import { useClerk, UserButton } from '@clerk/clerk-react';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '@context/AppContext';
 import ChatLabel from './ChatLabel';
+import Message from '@components/Message';
 
 const Sidebar = ({expand, setExpand}) => {
   

@@ -1,6 +1,6 @@
 import { Webhook } from "svix";
-import dbConnect from "@/config/db";
-import User from "@/models/User";
+import dbConnect from "@config/db";
+import User from "../../../../modules/User";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 
@@ -41,5 +41,8 @@ export async function POST(req) {
       return new Response("Invalid event type", { status: 400 });
   }
 
-  return NextRequest.json({ message: "Event Recieved" });
+  return new Response(JSON.stringify({ message: "Event Received" }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }
