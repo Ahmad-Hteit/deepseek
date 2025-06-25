@@ -1,51 +1,57 @@
 /* eslint-disable no-undef */
 import { Webhook } from "svix";
-import dbConnect from "@config/db";
-import User from "../../../../modules/User";
 import { headers } from "next/headers";
+import dbConnect from "@/config/db"; // update if your path is different
+import User from "@/modules/User"; // update if your path is different
 
 export async function POST(req) {
-  console.log("Webhook triggered");
+  console.log("🔔 Clerk webhook triggered");
 
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
-  const headerPayload = await headers();
-  const svixHeaders = {
-    "svix-id": headerPayload.get("svix-id"),
-    "svix-timestamp": headerPayload.get("svix-timestamp"),
-    "svix-signature": headerPayload.get("svix-signature"),
-  };
+  try {
+    const payload = await req.json();
+    const body = JSON.stringify(payload);
 
-  //Get payload and verify it
-  const payload = await req.json();
-  const body = JSON.stringify(payload);
-  const { data, type } = wh.verify(body, svixHeaders);
+    const headerPayload = headers();
+    const svixHeaders = {
+      "svix-id": headerPayload.get("svix-id"),
+      "svix-timestamp": headerPayload.get("svix-timestamp"),
+      "svix-signature": headerPayload.get("svix-signature"),
+    };
 
-  //prepare data for db
-  const userData = {
-    _id: data.id,
-    name: `${data.first_name} ${data.last_name}`,
-    email: data.email_addresses[0].email_address,
-    image: data.image_url,
-  };
+    const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+    const { data, type } = wh.verify(body, svixHeaders);
 
-  await dbConnect();
+    console.log("📦 Webhook Event:", type, data);
 
-  switch (type) {
-    case "user.created":
-      await User.create(userData);
-      break;
-    case "user.updated":
-      await User.findByIdAndUpdate(data.id, userData);
-      break;
-    case "user.deleted":
-      await User.findByIdAndDelete(data.id);
-      break;
-    default:
-      return new Response("Invalid event type", { status: 400 });
+    const userData = {
+      _id: data.id,
+      name: `${data.first_name} ${data.last_name}`,
+      email: data.email_addresses[0].email_address,
+      image: data.image_url,
+    };
+
+    await dbConnect();
+
+    switch (type) {
+      case "user.created":
+        await User.create(userData);
+        break;
+      case "user.updated":
+        await User.findByIdAndUpdate(data.id, userData);
+        break;
+      case "user.deleted":
+        await User.findByIdAndDelete(data.id);
+        break;
+      default:
+        return new Response("Unhandled event", { status: 400 });
+    }
+
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    console.error("❌ Webhook error:", err);
+    return new Response("Webhook error", { status: 500 });
   }
-
-  return new Response(JSON.stringify({ message: "Event Received" }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
 }
