@@ -5,6 +5,8 @@ import User from "../../../../modules/User";
 import { headers } from "next/headers";
 
 export async function POST(req) {
+  console.log("Webhook triggered");
+
   const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
   const headerPayload = await headers();
   const svixHeaders = {
