@@ -1,8 +1,8 @@
+/* eslint-disable no-undef */
 import { Webhook } from "svix";
 import dbConnect from "@config/db";
 import User from "../../../../modules/User";
 import { headers } from "next/headers";
-import { NextRequest } from "next/server";
 
 export async function POST(req) {
   const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);

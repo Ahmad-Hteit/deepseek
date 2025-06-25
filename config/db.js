@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import mongoose from "mongoose";
 
 let cached = global.mongoose || { con: null, promise: null };
