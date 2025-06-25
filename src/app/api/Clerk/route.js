@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 import { Webhook } from "svix";
+import dbConnect from "@config/db";
+import User from "../../../../modules/User";
 import { headers } from "next/headers";
-import dbConnect from "@/config/db"; // update if your path is different
-import User from "@/modules/User"; // update if your path is different
 
 export async function POST(req) {
   console.log("🔔 Clerk webhook triggered");
