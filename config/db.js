@@ -22,7 +22,7 @@ export default async function dbConnect() {
   try {
     cached.con = await cached.promise;
   } catch (e) {
-    console.log(e);
+    console.log("Error connecting to mongodb: ", e);
   }
 
   return cached.con;
