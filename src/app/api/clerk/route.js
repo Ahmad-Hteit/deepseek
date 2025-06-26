@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { Webhook } from "svix";
-import dbConnect from "../../../config/db";
-import User from "../../../modules/User";
+import dbConnect from "../../../../config/db";
+import User from "../../../../modules/User";
 import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
