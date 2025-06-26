@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req) {
   try {
-    const headerPayload = await headers(); // 🟢 FIXED: await this
+    const headerPayload = await headers();
 
     const svixHeaders = {
       "svix-id": headerPayload.get("svix-id"),
