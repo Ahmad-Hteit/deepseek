@@ -53,7 +53,7 @@ export async function POST(req) {
 
     return NextResponse.json({ message: "✅ Webhook handled" });
   } catch (err) {
-    console.error("❌ Webhook error:", err);
+    console.error("❌ Webhook error:", err.message, err.stack);
     return NextResponse.json({ error: "Webhook failed" }, { status: 500 });
   }
 }
