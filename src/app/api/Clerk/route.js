@@ -4,6 +4,7 @@ import dbConnect from "../../../../config/db";
 import User from "../../../../modules/User";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
 export async function POST(req) {
   console.log("🔔 Clerk webhook triggered");
 
