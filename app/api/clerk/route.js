@@ -6,44 +6,54 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
+
 export async function POST(req) {
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
-  const headerPayload = await headers();
-  const svixHeaders = {
-    "svix-id": headerPayload.get("svix-id"),
-    "svix-signature": headerPayload.get("svix-signature"),
-    "svix-timestamp": headerPayload.get("svix-timestamp"),
-  };
+  try {
+    console.log("🔔 Clerk webhook triggered");
 
-  //get the payload and verify it
-  const payload = await req.json();
-  const body = JSON.stringify(payload);
+    const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+    const headerPayload = headers();
+    const svixHeaders = {
+      "svix-id": headerPayload.get("svix-id"),
+      "svix-signature": headerPayload.get("svix-signature"),
+      "svix-timestamp": headerPayload.get("svix-timestamp"),
+    };
 
-  const { data, type } = wh.verify(body, svixHeaders);
+    const payload = await req.json();
+    const body = JSON.stringify(payload);
 
-  //prepare user data to save in db
-  const userData = {
-    _id: data.id,
-    email: data.email_addresses[0].email_address,
-    name: `${data.first_name} ${data.last_name}`,
-    image: data.image_url,
-  };
+    const { data, type } = wh.verify(body, svixHeaders);
+    console.log("📦 Event Type:", type);
+    console.log("👤 User Data:", data);
 
-  await dbConnect();
+    const userData = {
+      _id: data.id,
+      email: data.email_addresses?.[0]?.email_address ?? "unknown@clerk.dev",
+      name: `${data.first_name} ${data.last_name}`,
+      image: data.image_url,
+    };
 
-  switch (type) {
-    case "user.created":
-      await User.create(userData);
-      break;
-    case "user.updated":
-      await User.findByIdAndUpdate(data.id, userData);
-      break;
-    case "user.deleted":
-      await User.findByIdAndDelete(data.id);
-      break;
-    default:
-      break;
+    await dbConnect();
+    console.log("✅ Connected to MongoDB");
+
+    switch (type) {
+      case "user.created":
+        await User.create(userData);
+        break;
+      case "user.updated":
+        await User.findByIdAndUpdate(data.id, userData);
+        break;
+      case "user.deleted":
+        await User.findByIdAndDelete(data.id);
+        break;
+      default:
+        console.warn("⚠️ Unknown event type:", type);
+        break;
+    }
+
+    return NextResponse.json({ message: "✅ Webhook handled" });
+  } catch (err) {
+    console.error("❌ Webhook error:", err);
+    return NextResponse.json({ error: "Webhook failed" }, { status: 500 });
   }
-
-  return NextResponse.json({ message: "Event Recieved" });
 }
