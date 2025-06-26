@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import { Webhook } from "svix";
 import dbConnect from "../../../config/db";
@@ -22,7 +23,7 @@ export async function POST(req) {
     const payload = await req.json();
     const body = JSON.stringify(payload);
 
-    const { data, type } = wh.verify(body, svixHeaders);
+    // const { data, type } = wh.verify(body, svixHeaders);
     console.log("📦 Event Type:", type);
     console.log("👤 User Data:", data);
 
