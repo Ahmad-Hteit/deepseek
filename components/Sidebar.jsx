@@ -9,7 +9,7 @@ import ChatLabel from './ChatLabel';
 const Sidebar = ({expand, setExpand}) => {
   
   const {openSignIn} = useClerk();
-  const {user} = useAppContext();
+  const {user, chats, createNewChat} = useAppContext();
   const [openMenu, setOpenMenu] = useState({id: 0, open: false});
 
   return (
@@ -37,7 +37,8 @@ const Sidebar = ({expand, setExpand}) => {
                  </div>
             </div>
         </div>
-        <button className={`mt-8 flex items-center justify-center cursor-pointer 
+        <button onClick={createNewChat}
+         className={`mt-8 flex items-center justify-center cursor-pointer 
         ${expand ? 
           "bg-primary hover:opacity-90 rounded-2xl gap-2 p-2.5 w-max" : 
           "group relative h-9 w-9 mx-auto hover:bg-gray-500/30 rounded-lg"
@@ -64,7 +65,16 @@ const Sidebar = ({expand, setExpand}) => {
 
       <div className={`mt-8 text-white/25 text-sm ${expand ? "block" : "hidden"}`}>
         <p className='text-gray text font-medium'>Recents</p>
-        <ChatLabel openMenu={openMenu} setOpenMenu={setOpenMenu}/>
+        {chats.map((chat, index) => (
+          <ChatLabel
+            key={index}
+            name={chat.name}
+            id={chat._id}
+            openMenu={openMenu}
+            setOpenMenu={setOpenMenu}
+          />
+        ))}
+        
       </div>
       </div>
 
@@ -75,7 +85,7 @@ const Sidebar = ({expand, setExpand}) => {
           }`}>
             <Image className={expand ? "w-5" : "w-6.5 mx-auto"} 
             src={expand ? assets.phone_icon : assets.phone_icon_dull} alt='' />
-            <div className={`absolute -top-60 pb-8 ${!expand && "-right-40"} "opacity-0 group-hover:opacity-100 hidden group-hover:block transition"}`}>
+            <div className={`absolute -top-60 pb-8 ${!expand ? "-right-40" : ""} opacity-0 group-hover:opacity-100 group-hover:block transition`}>
               <div className='relative w-max bg-black text-white text-sm p-3 rounded-lg shadow-lg'>
                 <Image src={assets.qrcode} alt='' className='w-44' />
                 <p>Scan to get DeepSeek now</p>
